@@ -76,13 +76,15 @@ function display_post_carousel() {
     <div class="post-carousel">
         <button class="carousel-nav carousel-prev" aria-label="Previous posts">‹</button>
         
-        <div class="post-carousel-container">
-            <?php foreach ($posts as $post): ?>
-                <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" class="carousel-item">
-                    <span class="carousel-fire-icon">🔥</span>
-                    <span class="carousel-title"><?php echo esc_html($post->post_title); ?></span>
-                </a>
-            <?php endforeach; ?>
+        <div class="carousel-inner-container">
+            <div class="post-carousel-container">
+                <?php foreach ($posts as $post): ?>
+                    <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" class="carousel-item">
+                        <span class="carousel-fire-icon">🔥</span>
+                        <span class="carousel-title"><?php echo esc_html($post->post_title); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
         
         <button class="carousel-nav carousel-next" aria-label="Next posts">›</button>
@@ -161,6 +163,26 @@ function display_post_carousel() {
         startAutoScroll();
 
         window.addEventListener('beforeunload', stopAutoScroll);
+    });
+
+    //This function fades arrows when carousel is at very start or end
+    const container = document.querySelector('.carousel-inner-container');
+
+    container.addEventListener('scroll', () => {
+        const scrollLeft = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+
+        // Adjust Mask dynamically (Optional but looks great)
+        if (scrollLeft <= 5) {
+            // Only fade the right side if at the start
+            container.style.webkitMaskImage = "linear-gradient(to right, black 90%, transparent)";
+        } else if (scrollLeft >= maxScroll - 5) {
+            // Only fade the left side if at the end
+            container.style.webkitMaskImage = "linear-gradient(to left, black 90%, transparent)";
+        } else {
+            // Fade both sides in the middle
+            container.style.webkitMaskImage = "linear-gradient(to right, transparent, black 10%, black 90%, transparent)";
+        }
     });
     </script>
     <?php
